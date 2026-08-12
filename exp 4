@@ -1,0 +1,84 @@
+AIM:
+To write a program to recognize a valid variable which starts with a letter followed by any number of letters or
+digits using FLEX and BISON.
+ALGORITHM:
+FLEX
+1. Declare the required header file and variable declaration with in &#39;%{&#39; and &#39;%}&#39;.
+2. FLEX requires regular expressions or patterns to identify token of lexemes for recognizing a valid variable.
+3. FLEX calls yywrap() function after input is over. It should return 1 when work is done or should return 0 when
+more processing is required.
+BISON
+1. Declare the required header file and variable declaration within &#39;%{&#39; and &#39;%}&#39;.
+2. Define tokens in the first section and also define the associativity of the operations.
+3. Mention the grammar productions and the action for each production.
+4. $$ refers to the top of the stack position while $1 refers to the first value, $2 for the second value in the stack.
+5. Call yyparse() to initiate the parsing process.
+6. yyerror() function is called when none of the productions in the grammar match the input statement.
+PROCEDURE:
+Create the FLEX file valvar.l using a text editor.
+Define token patterns for letters and digits, and return them as LET and DIG tokens.
+Save and close the file.
+Create the BISON file valvar.y.
+Define grammar rules that recognize valid variable names (starting with a letter and followed by letters or digits).
+Save and close the BISON file.
+Open terminal/command prompt and compile using:
+o flex valvar.l
+o bison -d valvar.y
+o gcc lex.yy.c valvar.tab.c -o valvar -lfl
+Run the program: ./valvar
+Enter test inputs like abc1, var123, 1abc to test validation.
+Observe whether the variable is valid or invalid.
+PROGRAM:
+//valvar.l
+%{
+#include &quot;valvar.tab.h&quot;
+%}
+%%
+[a-zA-Z] {return LET;}
+[0-9] {return DIG;}
+\n {return 0;}
+%%
+int yywrap() {
+return 1;
+}
+//valvar.y
+%{
+#include&lt;stdio.h&gt;
+%}
+%token LET DIG
+%%
+variable: var ;
+var: var DIG | var LET | LET ;
+
+%%
+int main() {
+printf(&quot;Enter the variable:\n&quot;);
+yyparse();
+printf(&quot;Valid variable\n&quot;);
+return 0;
+}
+int yyerror() {
+printf(&quot;Invalid variable\n&quot;);
+exit(0);
+}
+OUTPUT:
+&quot;valvar.y&quot; 25L, 246C written
+[gomathy@rhel5 ~]$ flex valvar.l
+[gomathy@rhel5 ~]$ bison -d valvar.y
+[gomathy@rhel5 ~]$ gcc lex.yy.c valvar.tab.c -o valvar -lfl
+[gomathy@rhel5 ~]$ ./valvar
+Enter the variable:
+add
+Valid variable
+[gomathy@rhel5 ~]$ ./valvar
+Enter the variable:
+add1
+Valid variable
+[gomathy@rhel5 ~]$ ./valvar
+Enter the variable:
+1add
+Invalid variable
+[gomathy@rhel5 ~]$
+RESULT:
+Thus the program to recognize a valid variable which starts with a letter followed by any number of letters or digits
+using FLEX and BISON was executed and verified successfully.
